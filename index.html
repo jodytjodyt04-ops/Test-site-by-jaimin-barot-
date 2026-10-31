@@ -317,11 +317,14 @@ let PERSONAL_GROQ_KEY="";
 try{PERSONAL_GROQ_KEY=localStorage.getItem(USER_KEY_STORAGE)||""}catch(_){}
 let MODEL_NAME=DEFAULT_MODEL;
 const FALLBACK_MODELS=[
-  {id:"openai/gpt-oss-120b",label:"GPT-OSS 120B · Powerful"},
-  {id:"openai/gpt-oss-20b",label:"GPT-OSS 20B · Fast"},
-  {id:"llama-3.3-70b-versatile",label:"Llama 3.3 70B · Versatile"},
-  {id:"llama-3.1-8b-instant",label:"Llama 3.1 8B · Quick"},
-  {id:"qwen/qwen3-32b",label:"Qwen 3 32B · Reasoning"}
+  {id:"openai/gpt-oss-120b",label:"OpenAI GPT-OSS 120B · Powerful"},
+  {id:"openai/gpt-oss-20b",label:"OpenAI GPT-OSS 20B · Fast"},
+  {id:"openai/gpt-oss-safeguard-20b",label:"OpenAI GPT-OSS Safeguard 20B · Safety"},
+  {id:"qwen/qwen3.8-27b",label:"Qwen 3.8 27B · Reasoning"},
+  {id:"minimaxai/minimax-m2.7",label:"MiniMax M2.7 · Reasoning"},
+  {id:"meta-models/muse-spark-open",label:"Meta Muse Spark Open · Preview"},
+  {id:"meta-llama/llama-prompt-guard-2-22m",label:"Meta Llama Prompt Guard 2 · 22M (Safety classifier)"},
+  {id:"meta-llama/llama-prompt-guard-2-86m",label:"Meta Llama Prompt Guard 2 · 86M (Safety classifier)"}
 ];
 const SYSTEM_PROMPT=`You are JPT, a helpful AI assistant created by Jaimin Barot. Be accurate, friendly, warm, and practical. Sound like a thoughtful human helper, not a scripted robot. Acknowledge the user naturally when appropriate, avoid excessive enthusiasm, and ask a concise follow-up only when genuinely needed. Reply in the language the user uses; if they use Hindi/Hinglish, respond naturally in Hinglish. For coding requests, provide complete usable code when appropriate. When giving code, put each code block inside triple backticks and include a language label where possible. Use user-approved saved memory as relevant context to personalize answers, but do not force irrelevant memories into a reply. Never claim you have performed an action you did not perform.`;
 const $=id=>document.getElementById(id);
@@ -361,15 +364,16 @@ function closeModal(id){$(id).classList.remove("open")}
 function populateModelSelect(models){
   const select=$("modelSelect");
   let current=MODEL_NAME||DEFAULT_MODEL;
-  const nonChat=/whisper|orpheus|prompt-guard|tts|speech|transcription|embedding/i;
+  const nonChat=/whisper|orpheus|tts|speech|transcription|embedding/i;
   const unique=new Map();
+  // Always keep the curated list, including Meta's two Prompt Guard classifiers.
+  FALLBACK_MODELS.forEach(m=>unique.set(m.id,{...m,disabled:false}));
   (models||[]).forEach(m=>{
     const id=typeof m==="string"?m:m?.id;
     if(!id||nonChat.test(id))return;
     const label=typeof m==="string"?id:(m.label||id);
-    unique.set(id,{id,label,disabled:false});
+    if(!unique.has(id)) unique.set(id,{id,label,disabled:false});
   });
-  if(!unique.size) FALLBACK_MODELS.forEach(m=>unique.set(m.id,m));
   if(!unique.has(current)) unique.set(current,{id:current,label:current+" · saved"});
   if(!unique.has(DEFAULT_MODEL)) unique.set(DEFAULT_MODEL,{id:DEFAULT_MODEL,label:"GPT-OSS 120B · Best overall"});
   MODEL_NAME=current;
@@ -393,7 +397,8 @@ async function refreshAvailableModels(){
     const r=await fetch("https://api.groq.com/openai/v1/models",{headers:{"Authorization":"Bearer "+PERSONAL_GROQ_KEY}});
     if(!r.ok)return;
     const d=await r.json();
-    const list=(d.data||[]).filter(m=>m&&m.id&&!/whisper|orpheus|prompt-guard|tts|speech|transcription|embedding|guard|safeguard/i.test(m.id)).map(m=>({id:m.id,label:m.id}));
+    const list=(d.data||[]).filter(m=>m&&m.id&&!/whisper|orpheus|tts|speech|transcription|embedding/i.test(m.id)).map(m=>({id:m.id,label:m.id}));
+    // populateModelSelect merges dynamic models with the curated list so Prompt Guard never disappears.
     if(list.length)populateModelSelect(list);
   }catch(_){/* Keep fallback models if offline or model listing is unavailable. */}
 }
@@ -551,7 +556,7 @@ ${memoryText}`:"";
   const requestMessages=[{role:"system",content:SYSTEM_PROMPT+mem},...history];
   try{
     const payload={model:MODEL_NAME,messages:requestMessages,max_completion_tokens:2048,stream:false};
-    if(/openai\/gpt-oss-(120b|20b)/i.test(MODEL_NAME)){
+    if(/openai\/gpt-oss-(120b|20b|safeguard-20b)/i.test(MODEL_NAME)){
       payload.temperature=0.6;payload.top_p=0.95;payload.reasoning_effort="medium";payload.include_reasoning=false;
     }else{
       payload.temperature=0.6;payload.top_p=0.95;
