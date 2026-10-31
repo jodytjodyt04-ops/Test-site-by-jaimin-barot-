@@ -20,7 +20,7 @@ button,textarea,input{font:inherit}button{cursor:pointer}.app{width:100%;max-wid
 .suggestions{width:100%;max-width:550px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:27px}.suggestion{background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:14px;padding:13px 11px;text-align:left;font-size:13px;line-height:1.5}.suggestion:hover{border-color:var(--accent)}
 .message{display:flex;gap:10px;margin:0 auto 22px;max-width:780px;align-items:flex-start}.message.user{flex-direction:row-reverse}.avatar{width:33px;height:33px;min-width:33px;border-radius:11px;display:grid;place-items:center;background:var(--panel2);font-size:14px;font-weight:800}.message.assistant .avatar{background:linear-gradient(135deg,#10a37f,#333333)}
 .bubble{max-width:calc(100% - 43px);min-width:0;padding:12px 14px;border:1px solid var(--border);border-radius:4px 16px 16px 16px;background:var(--panel);font-size:14px;line-height:1.75;overflow-wrap:anywhere;white-space:pre-wrap}.message.user .bubble{background:#171c22;border-color:rgba(255,255,255,.14);border-radius:16px 4px 16px 16px}.message.error .bubble{border-color:rgba(255,107,107,.45);color:#ffb6b6}
-.code-block{margin:10px 0;border:1px solid var(--border);border-radius:11px;overflow:hidden;background:#0b0b13;max-width:100%;white-space:normal}.code-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 10px;background:#20262d;color:#c9c9df;font-size:11px}.copy-code{background:#293b50;color:#fff;border:1px solid #425b76;border-radius:7px;padding:5px 9px;font-size:11px}.message-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.speak-button,.audio-tool{background:var(--panel2);color:#fff;border:1px solid var(--border);border-radius:9px;padding:8px 10px;font-size:11px}.audio-toolbar{max-width:780px;margin:0 auto 8px;display:flex;gap:7px;flex-wrap:wrap}.audio-status{max-width:780px;margin:0 auto 5px;color:#80e3c2;font-size:11px;min-height:15px}.audio-tool:disabled{opacity:.45;cursor:wait}.code-block pre{margin:0;padding:12px;overflow:auto;max-width:100%;white-space:pre}.code-block code{font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;color:#eeeeee;white-space:pre}
+.assistant-tools{display:flex;gap:7px;flex-wrap:wrap;margin:8px 12px 4px}.copy-response{background:#202830;color:#dce7f2;border:1px solid #394957;border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer}.copy-response:hover,.copy-code:hover{filter:brightness(1.18)}.copy-code{cursor:pointer;min-width:78px}.code-block{margin:10px 0;border:1px solid var(--border);border-radius:11px;overflow:hidden;background:#0b0b13;max-width:100%;white-space:normal}.code-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 10px;background:#20262d;color:#c9c9df;font-size:11px}.copy-code{background:#293b50;color:#fff;border:1px solid #425b76;border-radius:7px;padding:5px 9px;font-size:11px}.message-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.speak-button,.audio-tool{background:var(--panel2);color:#fff;border:1px solid var(--border);border-radius:9px;padding:8px 10px;font-size:11px}.audio-toolbar{max-width:780px;margin:0 auto 8px;display:flex;gap:7px;flex-wrap:wrap}.audio-status{max-width:780px;margin:0 auto 5px;color:#80e3c2;font-size:11px;min-height:15px}.audio-tool:disabled{opacity:.45;cursor:wait}.code-block pre{margin:0;padding:12px;overflow:auto;max-width:100%;white-space:pre}.code-block code{font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;color:#eeeeee;white-space:pre}
 .typing{display:flex;gap:5px;align-items:center;padding:5px 2px}.typing span{width:7px;height:7px;background:#bdbdbd;border-radius:50%;animation:bounce .8s infinite alternate}.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}@keyframes bounce{from{transform:translateY(0);opacity:.45}to{transform:translateY(-5px);opacity:1}}
 .composer-area{padding:11px 14px max(10px,env(safe-area-inset-bottom));border-top:1px solid var(--border);background:var(--bg)}.composer{max-width:780px;margin:auto;display:flex;align-items:flex-end;gap:9px;padding:8px;background:var(--panel);border:1px solid rgba(255,255,255,.14);border-radius:17px}.composer:focus-within{border-color:var(--accent)}
 #prompt{flex:1;width:100%;max-height:150px;min-height:42px;resize:none;border:0;outline:0;color:var(--text);background:transparent;padding:10px 7px;line-height:1.5;font-size:14px}#prompt::placeholder{color:#85859f}
@@ -317,11 +317,11 @@ let PERSONAL_GROQ_KEY="";
 try{PERSONAL_GROQ_KEY=localStorage.getItem(USER_KEY_STORAGE)||""}catch(_){}
 let MODEL_NAME=DEFAULT_MODEL;
 const FALLBACK_MODELS=[
-  {id:"openai/gpt-oss-120b",label:"GPT-OSS 120B · Best overall"},
+  {id:"openai/gpt-oss-120b",label:"GPT-OSS 120B · Powerful"},
   {id:"openai/gpt-oss-20b",label:"GPT-OSS 20B · Fast"},
-  {id:"qwen/qwen3.8-27b",label:"Qwen 3.8 27B · Reasoning + vision"},
-  {id:"minimaxai/minimax-m2.7",label:"MiniMax M2.7 · Advanced reasoning"},
-  {id:"meta-models/muse-spark-open",label:"Muse Spark Open · Preview"}
+  {id:"llama-3.3-70b-versatile",label:"Llama 3.3 70B · Versatile"},
+  {id:"llama-3.1-8b-instant",label:"Llama 3.1 8B · Quick"},
+  {id:"qwen/qwen3-32b",label:"Qwen 3 32B · Reasoning"}
 ];
 const SYSTEM_PROMPT=`You are JPT, a helpful AI assistant created by Jaimin Barot. Be accurate, friendly, warm, and practical. Sound like a thoughtful human helper, not a scripted robot. Acknowledge the user naturally when appropriate, avoid excessive enthusiasm, and ask a concise follow-up only when genuinely needed. Reply in the language the user uses; if they use Hindi/Hinglish, respond naturally in Hinglish. For coding requests, provide complete usable code when appropriate. When giving code, put each code block inside triple backticks and include a language label where possible. Use user-approved saved memory as relevant context to personalize answers, but do not force irrelevant memories into a reply. Never claim you have performed an action you did not perform.`;
 const $=id=>document.getElementById(id);
@@ -387,6 +387,16 @@ $("modelSelect").addEventListener("change",()=>{
   MODEL_NAME=$("modelSelect").value||DEFAULT_MODEL;
   try{localStorage.setItem(MODEL_STORAGE,MODEL_NAME)}catch(_){}
 });
+async function refreshAvailableModels(){
+  if(!PERSONAL_GROQ_KEY)return;
+  try{
+    const r=await fetch("https://api.groq.com/openai/v1/models",{headers:{"Authorization":"Bearer "+PERSONAL_GROQ_KEY}});
+    if(!r.ok)return;
+    const d=await r.json();
+    const list=(d.data||[]).filter(m=>m&&m.id&&!/whisper|orpheus|prompt-guard|tts|speech|transcription|embedding|guard|safeguard/i.test(m.id)).map(m=>({id:m.id,label:m.id}));
+    if(list.length)populateModelSelect(list);
+  }catch(_){/* Keep fallback models if offline or model listing is unavailable. */}
+}
 
 function openHistory(){renderHistory();$("historyDrawer").classList.add("open");$("drawerOverlay").classList.add("open")}
 function closeHistory(){$("historyDrawer").classList.remove("open");$("drawerOverlay").classList.remove("open")}
@@ -465,33 +475,51 @@ $("newChatButton").addEventListener("click",()=>{
 function scrollToBottom(){requestAnimationFrame(()=>{chat.scrollTop=chat.scrollHeight})}
 function hideWelcome(){welcome.style.display="none"}
 function appendText(parent,text){parent.appendChild(document.createTextNode(text))}
+async function copyTextReliable(text){
+  try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(String(text));return true}}catch(_){}
+  const ta=document.createElement("textarea");ta.value=String(text);ta.setAttribute("readonly","");
+  ta.style.position="fixed";ta.style.left="-9999px";ta.style.top="0";ta.style.opacity="0";
+  document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,ta.value.length);
+  let ok=false;try{ok=document.execCommand("copy")}catch(_){}ta.remove();
+  if(!ok){try{window.prompt("Clipboard access was blocked. Copy the text below:",String(text))}catch(__){}}
+  return ok;
+}
 function renderContent(bubble,content){
-  // Render fenced code blocks safely; never interpret model output as HTML.
-  const parts=String(content).split(/```([^\n`]*)\n([\s\S]*?)```/g);
-  if(parts.length===1){bubble.textContent=content;return}
-  for(let i=0;i<parts.length;i+=3){
-    appendText(bubble,parts[i]||"");
-    if(i+2<parts.length){
-      const lang=(parts[i+1]||"").trim()||"code",code=parts[i+2]||"";
-      const wrap=document.createElement("div");wrap.className="code-block";
-      const head=document.createElement("div");head.className="code-head";
-      const label=document.createElement("span");label.textContent=lang;
-      const copy=document.createElement("button");copy.type="button";copy.className="copy-code";copy.textContent="Copy code";
-      copy.addEventListener("click",async()=>{
-        try{await navigator.clipboard.writeText(code);copy.textContent="Copied ✓"}
-        catch(_){const ta=document.createElement("textarea");ta.value=code;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();const ok=document.execCommand("copy");ta.remove();copy.textContent=ok?"Copied ✓":"Select code to copy"}
-        setTimeout(()=>copy.textContent="Copy code",1800);
-      });
-      head.append(label,copy);
-      const pre=document.createElement("pre"),codeEl=document.createElement("code");codeEl.textContent=code;pre.appendChild(codeEl);wrap.append(head,pre);bubble.appendChild(wrap);
-    }
+  // Parse both complete and unfinished Markdown code fences so a missing closing fence
+  // from an AI response does not remove the code-copy control.
+  const source=String(content??"");
+  const fence=/```([^\n`]*)\n([\s\S]*?)(?:```|$)/g;
+  let last=0,match,found=false;
+  while((match=fence.exec(source))!==null){
+    found=true;appendText(bubble,source.slice(last,match.index));
+    const lang=(match[1]||"").trim()||"code";
+    const whole=match[0];const closed=whole.endsWith("```");
+    const code=match[2]||"";
+    const wrap=document.createElement("div");wrap.className="code-block";
+    const head=document.createElement("div");head.className="code-head";
+    const label=document.createElement("span");label.textContent=lang;
+    const copy=document.createElement("button");copy.type="button";copy.className="copy-code";copy.textContent="Copy code";
+    copy.addEventListener("click",async()=>{const ok=await copyTextReliable(code);copy.textContent=ok?"Copied ✓":"Copy manually";setTimeout(()=>copy.textContent="Copy code",1800)});
+    head.append(label,copy);
+    const pre=document.createElement("pre"),codeEl=document.createElement("code");codeEl.textContent=code;pre.appendChild(codeEl);wrap.append(head,pre);bubble.appendChild(wrap);
+    last=match.index+whole.length;
+    if(!closed)break;
   }
+  if(!found){bubble.textContent=source;return}
+  appendText(bubble,source.slice(last));
 }
 function addMessage(role,content,isError=false,scroll=true){
   hideWelcome();const row=document.createElement("div");row.className="message "+role+(isError?" error":"");
   const avatar=document.createElement("div");avatar.className="avatar";avatar.textContent=role==="user"?"●":"✦";
   const bubble=document.createElement("div");bubble.className="bubble";renderContent(bubble,content);
-  row.append(avatar,bubble);messagesElement.appendChild(row);if(scroll)scrollToBottom();return row;
+  row.append(avatar,bubble);messagesElement.appendChild(row);
+  if(role==="assistant"&&!isError){
+    const tools=document.createElement("div");tools.className="assistant-tools";
+    const copyAll=document.createElement("button");copyAll.type="button";copyAll.className="copy-response";copyAll.textContent="Copy response";
+    copyAll.addEventListener("click",async()=>{const ok=await copyTextReliable(String(content));copyAll.textContent=ok?"Copied ✓":"Copy manually";setTimeout(()=>copyAll.textContent="Copy response",1800)});
+    tools.appendChild(copyAll);row.appendChild(tools);
+  }
+  if(scroll)scrollToBottom();return row;
 }
 function showTyping(){
   hideWelcome();const row=document.createElement("div");row.className="message assistant";row.id="typingIndicator";
@@ -575,9 +603,10 @@ $("apiKeyButton").addEventListener("click",()=>{$("apiKeyInput").value=PERSONAL_
 $("cancelApiKey").addEventListener("click",()=>closeModal("apiKeyModal"));
 $("apiKeyModal").addEventListener("click",e=>{if(e.target===$("apiKeyModal"))closeModal("apiKeyModal")});
 $("showApiKey").addEventListener("change",()=>{$("apiKeyInput").type=$("showApiKey").checked?"text":"password"});
-$("saveApiKey").addEventListener("click",()=>{const key=$("apiKeyInput").value.trim();if(key&&!key.startsWith("gsk_")){if(!confirm("This does not look like a standard Groq key (gsk_…). Save it anyway?"))return}try{if(key){localStorage.setItem(USER_KEY_STORAGE,key);PERSONAL_GROQ_KEY=key}else{localStorage.removeItem(USER_KEY_STORAGE);PERSONAL_GROQ_KEY=""}$("apiKeyStatus").textContent=PERSONAL_GROQ_KEY?"✓ Personal API key saved on this device":"No personal API key saved";closeModal("apiKeyModal")}catch(_){alert("Could not save the key in this browser.")}});
+$("saveApiKey").addEventListener("click",()=>{const key=$("apiKeyInput").value.trim();if(key&&!key.startsWith("gsk_")){if(!confirm("This does not look like a standard Groq key (gsk_…). Save it anyway?"))return}try{if(key){localStorage.setItem(USER_KEY_STORAGE,key);PERSONAL_GROQ_KEY=key}else{localStorage.removeItem(USER_KEY_STORAGE);PERSONAL_GROQ_KEY=""}$("apiKeyStatus").textContent=PERSONAL_GROQ_KEY?"✓ Personal API key saved on this device":"No personal API key saved";closeModal("apiKeyModal");refreshAvailableModels()}catch(_){alert("Could not save the key in this browser.")}});
 $("removeApiKey").addEventListener("click",()=>{try{localStorage.removeItem(USER_KEY_STORAGE);PERSONAL_GROQ_KEY="";$("apiKeyInput").value="";$("apiKeyStatus").textContent="Personal API key removed"}catch(_){}});
 loadAppData();
+refreshAvailableModels();
 </script>
 </body>
 </html>
